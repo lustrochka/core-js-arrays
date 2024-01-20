@@ -21,8 +21,7 @@
  *    getIntervalArray(3, 3) => [ 3 ]
  */
 function getIntervalArray(start, end) {
-  const arr = new Array(end - start + 1);
-  return arr.fill(null).map((x, index) => start + index);
+  return Array.from({ length: end - start + 1 }, (v, i) => start + i);
 }
 
 /**
@@ -38,8 +37,15 @@ function getIntervalArray(start, end) {
  *    sumArrays([10, 20, 30], [5, 10, 15]) => [15, 30, 45]
  *    sumArrays([-1, 0, 1], [1, 2, 3, 4]) => [0, 2, 4, 4]
  */
-function sumArrays(/* arr1, arr2 */) {
-  throw new Error('Not implemented');
+function sumArrays(arr1, arr2) {
+  if (arr1 >= arr2) {
+    return arr1.map((x, index) => {
+      return arr2[index] ? x + arr2[index] : x;
+    });
+  }
+  return arr2.map((x, index) => {
+    return arr1[index] ? x + arr1[index] : x;
+  });
 }
 
 /**
@@ -264,8 +270,21 @@ function distinct(arr) {
  *    createNDimensionalArray(4, 2) => [[[[0, 0], [0, 0]], [[0, 0], [0, 0]]], [[[0, 0], [0, 0]], [[0, 0], [0, 0]]]]
  *    createNDimensionalArray(1, 1) => [0]
  */
-function createNDimensionalArray(/* n, size */) {
-  throw new Error('Not implemented');
+function createNDimensionalArray(n, size) {
+  console.log(n, size);
+  const arr = new Array(size);
+  let depth = 1;
+  function fillArray(array) {
+    if (depth === n) {
+      array.fill(0, 0, size);
+      return array;
+    }
+    array.fill(new Array(size));
+    depth += 1;
+    return array.map((x) => fillArray(x));
+  }
+  fillArray(arr);
+  return arr;
 }
 
 /**
@@ -297,9 +316,7 @@ function flattenArray(nestedArray) {
  *   selectMany(['one','two','three'], (x) => x.split('')) =>   ['o','n','e','t','w','o','t','h','r','e','e']
  */
 function selectMany(arr, childrenSelector) {
-  const res = [];
-  arr.map((x) => res.push(childrenSelector(x)));
-  return res.flat();
+  return arr.flatMap((x) => childrenSelector(x));
 }
 
 /**
@@ -332,8 +349,17 @@ function calculateBalance(arr) {
  *    createChunks(['a', 'b', 'c', 'd', 'e'], 2) => [['a', 'b'], ['c', 'd'], ['e']]
  *    createChunks([10, 20, 30, 40, 50], 1) => [[10], [20], [30], [40], [50]]
  */
-function createChunks(/* arr, chunkSize */) {
-  throw new Error('Not implemented');
+function createChunks(arr, chunkSize) {
+  let interArr = [];
+  return arr.reduce((acc, val, index) => {
+    if (interArr.length === chunkSize) {
+      acc.push(interArr);
+      interArr = [];
+    }
+    interArr.push(val);
+    if (index === arr.length - 1) acc.push(interArr);
+    return acc;
+  }, []);
 }
 
 /**
@@ -422,8 +448,11 @@ function getIdentityMatrix(n) {
  *    getIndicesOfOddNumbers([2, 4, 6, 8, 10]) => []
  *    getIndicesOfOddNumbers([11, 22, 33, 44, 55]) => [0, 2, 4]
  */
-function getIndicesOfOddNumbers(/* numbers */) {
-  throw new Error('Not implemented');
+function getIndicesOfOddNumbers(numbers) {
+  return numbers.reduce((acc, val, index) => {
+    if (val % 2 === 1) acc.push(index);
+    return acc;
+  }, []);
 }
 
 /**
@@ -436,8 +465,8 @@ function getIndicesOfOddNumbers(/* numbers */) {
  *    getHexRGBValues([ 0, 255, 16777215]) => [ '#000000', '#0000FF', '#FFFFFF' ]
  *    getHexRGBValues([]) => []
  */
-function getHexRGBValues(/* arr */) {
-  throw new Error('Not implemented');
+function getHexRGBValues(arr) {
+  return arr.map((x) => `#${x.toString(16).padStart(6, '0').toUpperCase()}`);
 }
 
 /**
@@ -486,8 +515,18 @@ function findCommonElements(arr1, arr2) {
  *    findLongestIncreasingSubsequence([3, 10, 2, 1, 20]) => 2
  *    findLongestIncreasingSubsequence([50, 3, 10, 7, 40, 80]) => 3
  */
-function findLongestIncreasingSubsequence(/* nums */) {
-  throw new Error('Not implemented');
+function findLongestIncreasingSubsequence(nums) {
+  let length = 0;
+  const n = nums.reduce((acc, val, index) => {
+    if (nums[index + 1] > val) {
+      length += 1;
+    } else {
+      acc.push(length);
+      length = 0;
+    }
+    return acc;
+  }, []);
+  return n.sort((a, b) => b - a)[0] + 1;
 }
 
 /**
@@ -526,8 +565,17 @@ function propagateItemsByPositionIndex(arr) {
  *    shiftArray(['a', 'b', 'c', 'd'], -1) => ['b', 'c', 'd', 'a']
  *    shiftArray([10, 20, 30, 40, 50], -3) => [40, 50, 10, 20, 30]
  */
-function shiftArray(/* arr, n */) {
-  throw new Error('Not implemented');
+function shiftArray(arr, n) {
+  return arr.reduce((acc, val, index) => {
+    if (index + n < arr.length && index + n > -1) {
+      acc[index + n] = val;
+    } else if (n > 0) {
+      acc[index + n - arr.length] = val;
+    } else {
+      acc[arr.length + index + n] = val;
+    }
+    return acc;
+  }, []);
 }
 
 /**
