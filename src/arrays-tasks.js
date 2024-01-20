@@ -271,7 +271,6 @@ function distinct(arr) {
  *    createNDimensionalArray(1, 1) => [0]
  */
 function createNDimensionalArray(n, size) {
-  console.log(n, size);
   const arr = new Array(size);
   let depth = 1;
   function fillArray(array) {
